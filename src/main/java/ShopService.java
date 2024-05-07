@@ -27,4 +27,13 @@ public class ShopService {
                 .filter(order -> orderStatus == order.orderStatus())
                 .toList();
     }
+
+    public void updateOrder (String orderId, OrderStatus newOrderStatus) {
+        Order foundOrder = orderRepo.getOrderById(orderId);
+        if (foundOrder == null) {
+            throw new OrderDoesNotExistException("Die Bestellung mit der Id: " + orderId + " konnte nicht gefunden werden!");
+        }
+        Order modifiedOrder = foundOrder.withOrderStatus(newOrderStatus);
+        orderRepo.addOrder(modifiedOrder);
+    }
 }

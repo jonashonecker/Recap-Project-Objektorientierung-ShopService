@@ -22,6 +22,7 @@ public class Main {
         orderRepo.addOrder(o3);
 
         ShopService shopService = new ShopService(productRepo, orderRepo, new IdService());
-        System.out.println(shopService);
+
+        System.out.println(shopService.getOldestOrderPerStatus());
     }
 }

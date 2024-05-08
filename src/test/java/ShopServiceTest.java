@@ -1,7 +1,10 @@
 import org.junit.jupiter.api.Test;
 
 import java.time.Instant;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -94,5 +97,42 @@ class ShopServiceTest {
         List<Order> actual = shopService.getListOfOrdersByOrderStatus(OrderStatus.COMPLETED);
         OrderStatus actualOrderStatus = actual.get(0).orderStatus();
         assertEquals(OrderStatus.COMPLETED, actualOrderStatus);
+    }
+
+    @Test
+    void getOldestOrderPerStatus_WhenOrderRepoEmpty_ReturnsEmptyMap() {
+        // GIVEN
+        ShopService shopService = new ShopService(new ProductRepo(), new OrderMapRepo(), new IdService());
+
+        // WHEN
+        Map<OrderStatus, Optional<Order>> actual = shopService.getOldestOrderPerStatus();
+
+        // THEN
+        Map<OrderStatus, Optional<Order>> expected = new HashMap<>();
+        assertEquals(expected, actual);
+    }
+
+    @Test
+    void getOldestOrderPerStatus_WhenAddingOrdersSequentiallyWithTheSameOrderStatus_ReturnsFirstAddedOrder() {
+        // GIVEN
+        OrderRepo orderRepo = new OrderMapRepo();
+        Product p1 = new Product("1", "Baseball");
+        Product p2 = new Product("2", "Basketball");
+        Product p3 = new Product("3", "Fußball");
+        Order o1 = new Order("1", List.of(p1, p2), Instant.now());
+        Order o2 = new Order("2", List.of(p1, p2, p3), Instant.now());
+        Order o3 = new Order("3", List.of(p3), Instant.now());
+        orderRepo.addOrder(o1);
+        orderRepo.addOrder(o2);
+        orderRepo.addOrder(o3);
+        ShopService shopService = new ShopService(new ProductRepo(), orderRepo, new IdService());
+
+        // WHEN
+        Map<OrderStatus, Optional<Order>> actual = shopService.getOldestOrderPerStatus();
+
+        // THEN
+        Map<OrderStatus, Optional<Order>> expected = new HashMap<>();
+        expected.put(OrderStatus.PROCESSING, Optional.of(o1));
+        assertEquals(expected, actual);
     }
 }

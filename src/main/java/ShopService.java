@@ -2,10 +2,10 @@ import lombok.RequiredArgsConstructor;
 import lombok.ToString;
 
 import java.time.Instant;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
+
+import static java.util.stream.Collectors.groupingBy;
+import static java.util.stream.Collectors.minBy;
 
 @ToString
 @RequiredArgsConstructor
@@ -33,6 +33,14 @@ public class ShopService {
         return orderRepo.getOrders().stream()
                 .filter(order -> orderStatus == order.orderStatus())
                 .toList();
+    }
+
+    public Map<OrderStatus, Optional<Order>> getOldestOrderPerStatus () {
+        return orderRepo.getOrders().stream()
+                .collect(groupingBy(
+                        Order::orderStatus,
+                        minBy(Comparator.comparing(Order::orderTimestamp)))
+                );
     }
 
     public void updateOrder (String orderId, OrderStatus newOrderStatus) {

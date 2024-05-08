@@ -21,7 +21,7 @@ public class Main {
         orderRepo.addOrder(o2);
         orderRepo.addOrder(o3);
 
-        ShopService shopService = new ShopService(productRepo, orderRepo);
+        ShopService shopService = new ShopService(productRepo, orderRepo, new IdService());
         System.out.println(shopService);
     }
 }

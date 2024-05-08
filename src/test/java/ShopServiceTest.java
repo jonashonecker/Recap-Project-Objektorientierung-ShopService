@@ -10,7 +10,7 @@ class ShopServiceTest {
     @Test
     void addOrderTest() {
         //GIVEN
-        ShopService shopService = new ShopService();
+        ShopService shopService = new ShopService(new ProductRepo(), new OrderMapRepo());
         List<String> productsIds = List.of("1");
 
         //WHEN
@@ -25,7 +25,7 @@ class ShopServiceTest {
     @Test
     void addOrderTest_WhenInvalidProductId_TrowsProductDoesNotExistException() {
         //GIVEN
-        ShopService shopService = new ShopService();
+        ShopService shopService = new ShopService(new ProductRepo(), new OrderMapRepo());
         List<String> productsIds = List.of("1", "2");
 
         //WHEN
@@ -39,7 +39,7 @@ class ShopServiceTest {
     @Test
     void getListOfOrdersByOrderStatus_WhenOrderStatusPROCESSING_ReturnsOne() {
         //GIVEN
-        ShopService shopService = new ShopService();
+        ShopService shopService = new ShopService(new ProductRepo(), new OrderMapRepo());
         Order newOrder = shopService.addOrder(List.of("1"));
 
         //WHEN
@@ -53,7 +53,7 @@ class ShopServiceTest {
     @Test
     void getListOfOrdersByOrderStatus_WhenOrderStatusNotPresent_ReturnsEmptyList() {
         //GIVEN
-        ShopService shopService = new ShopService();
+        ShopService shopService = new ShopService(new ProductRepo(), new OrderMapRepo());
         Order newOrder = shopService.addOrder(List.of("1"));
 
         //WHEN
@@ -67,7 +67,7 @@ class ShopServiceTest {
     @Test
     void updateOrder_WhenOrderDoesNotExist_ThrowOrderDoesNotExistException() {
         //GIVEN
-        ShopService shopService = new ShopService();
+        ShopService shopService = new ShopService(new ProductRepo(), new OrderMapRepo());
         Order newOrder = shopService.addOrder(List.of("1"));
 
         //WHEN
@@ -83,7 +83,7 @@ class ShopServiceTest {
     @Test
     void updateOrder_WhenInputValidOrderIdAndOrderStatusCOMPLETED_UpdatesOrderStatusToCOMPLETED() {
         //GIVEN
-        ShopService shopService = new ShopService();
+        ShopService shopService = new ShopService(new ProductRepo(), new OrderMapRepo());
         Order newOrder = shopService.addOrder(List.of("1"));
         String orderId = newOrder.id();
 
